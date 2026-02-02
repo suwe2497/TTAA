@@ -160,6 +160,24 @@ header p {
     color: #dc3545 !important;
 }
 
+.data-source-real {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.data-source-mock {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
 .sentiment-score {
     display: flex;
     justify-content: space-around;

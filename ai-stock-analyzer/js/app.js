@@ -79,6 +79,8 @@ class AIStockAnalyzer {
             // 使用 API 獲取真實數據
             const stockData = await this.api.getDetailedStockData(symbol);
             
+            // 標記為真實數據
+            this.dataSource = 'real';
             this.symbol = stockData.symbol;
             this.price = stockData.price.toFixed(2);
             this.change = stockData.change;
@@ -137,6 +139,8 @@ class AIStockAnalyzer {
         const currentPrice = basePrice + changeAmount;
         const volume = Math.floor(Math.random() * 10000000) + 1000000;
         
+        // 標記為模擬數據
+        this.dataSource = 'mock';
         this.symbol = symbol;
         this.price = currentPrice.toFixed(2);
         this.change = changeAmount.toFixed(2);
@@ -278,6 +282,22 @@ class AIStockAnalyzer {
         this.priceChange.textContent = `$${this.change}`;
         this.priceChangePercent.textContent = `${this.changePercent}%`;
         this.volume.textContent = this.vol;
+        
+        // 顯示數據來源標籤
+        const dataSourceLabel = document.getElementById('dataSourceLabel');
+        if (dataSourceLabel) {
+            dataSourceLabel.textContent = this.dataSource === 'real' ? '📊 真實數據' : '🎲 模擬數據';
+            dataSourceLabel.className = this.dataSource === 'real' ? 'data-source-real' : 'data-source-mock';
+        } else {
+            // 如果不存在則創建
+            const symbolElement = document.getElementById('currentSymbol');
+            const dataSourceSpan = document.createElement('span');
+            dataSourceSpan.id = 'dataSourceLabel';
+            dataSourceSpan.textContent = this.dataSource === 'real' ? '📊 真實數據' : '🎲 模擬數據';
+            dataSourceSpan.className = this.dataSource === 'real' ? 'data-source-real' : 'data-source-mock';
+            symbolElement.after(document.createTextNode(' ')); // 添加空格
+            symbolElement.after(dataSourceSpan);
+        }
         
         // 更新顏色根據漲跌
         const changeElements = [this.priceChange, this.priceChangePercent];
