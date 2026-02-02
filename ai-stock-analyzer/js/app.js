@@ -74,14 +74,47 @@ class AIStockAnalyzer {
     }
     
     generateMockData(symbol) {
-        // 生成模擬股價數據
-        const basePrice = Math.random() * 300 + 50; // 50-350 的基準價格
-        const changePercent = (Math.random() - 0.5) * 0.1; // -5% 到 +5%
+        // 生成更真實的股價數據
+        let basePrice;
+        
+        // 根據股票代號設置更合理的基準價格
+        switch(symbol.toUpperCase()) {
+            case 'AAPL':
+                basePrice = 175 + (Math.random() * 10 - 5); // $170-$180
+                break;
+            case 'GOOGL':
+                basePrice = 140 + (Math.random() * 15 - 7.5); // $132-$147
+                break;
+            case 'MSFT':
+                basePrice = 370 + (Math.random() * 20 - 10); // $360-$380
+                break;
+            case 'AMZN':
+                basePrice = 175 + (Math.random() * 15 - 7.5); // $167-$182
+                break;
+            case 'TSLA':
+                basePrice = 250 + (Math.random() * 25 - 12.5); // $237-$262
+                break;
+            case 'NVDA':
+                basePrice = 850 + (Math.random() * 50 - 25); // $825-$875
+                break;
+            case 'META':
+                basePrice = 480 + (Math.random() * 20 - 10); // $470-$490
+                break;
+            case 'NFLX':
+                basePrice = 550 + (Math.random() * 25 - 12.5); // $537-$562
+                break;
+            default:
+                basePrice = 50 + (Math.random() * 300); // $50-$350 通用範圍
+        }
+        
+        // 生成更合理的漲跌幅 (-5% 到 +5%)
+        const changePercent = (Math.random() - 0.5) * 0.1;
         const changeAmount = basePrice * changePercent;
+        const currentPrice = basePrice + changeAmount;
         const volume = Math.floor(Math.random() * 10000000) + 1000000; // 1M-11M
         
         this.symbol = symbol;
-        this.price = basePrice.toFixed(2);
+        this.price = currentPrice.toFixed(2);
         this.change = changeAmount.toFixed(2);
         this.changePercent = (changePercent * 100).toFixed(2);
         this.vol = volume.toLocaleString();
