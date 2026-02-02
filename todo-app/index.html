@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>現代化 TODO LIST</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>現代化 TODO LIST</h1>
+            <p>輕鬆管理您的待辦事項</p>
+        </header>
+        
+        <div class="input-section">
+            <input type="text" id="taskInput" placeholder="輸入新任務..." maxlength="100">
+            <button id="addTaskBtn">添加任務</button>
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="active">進行中</button>
+            <button class="filter-btn" data-filter="completed">已完成</button>
+        </div>
+        
+        <ul id="taskList" class="task-list"></ul>
+        
+        <div class="stats">
+            <span id="taskCount">共 0 項任務</span>
+            <button id="clearCompletedBtn">清除已完成</button>
+        </div>
+    </div>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
