@@ -1,0 +1,329 @@
+/* 基礎重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+header p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.search-section {
+    padding: 25px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#stockSymbol {
+    flex: 1;
+    padding: 14px 18px;
+    border: 2px solid #e1e5e9;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+#stockSymbol:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#analyzeBtn {
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#analyzeBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+#analyzeBtn:active {
+    transform: translateY(0);
+}
+
+.analysis-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.analysis-options label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #555;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.stock-info, .ai-analysis {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+}
+
+.stock-info h2, .ai-analysis h2 {
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+}
+
+.price-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.price-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.positive {
+    color: #28a745 !important;
+}
+
+.negative {
+    color: #dc3545 !important;
+}
+
+.sentiment-score {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.score-circle span {
+    font-size: 1.5rem;
+}
+
+.score-circle small {
+    font-size: 0.7rem;
+    opacity: 0.9;
+}
+
+.recommendation {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #667eea;
+}
+
+.analysis-details h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#analysisFactors {
+    list-style: none;
+    padding-left: 0;
+}
+
+#analysisFactors li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #555;
+}
+
+.chart-container {
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.chart-container h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.chart-placeholder {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loading-chart {
+    margin-top: 15px;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.news-feed {
+    padding: 20px;
+    background: #fff;
+    border-top: 1px solid #eee;
+}
+
+.news-feed h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+#newsContainer {
+    display: grid;
+    gap: 15px;
+}
+
+.news-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.news-item h4 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.news-item p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.risk-warning {
+    padding: 20px;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.risk-warning h3 {
+    color: #856404;
+    margin-bottom: 8px;
+}
+
+.risk-warning p {
+    color: #856404;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        border-radius: 12px;
+    }
+    
+    header {
+        padding: 25px 15px;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .analysis-options {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .price-data {
+        grid-template-columns: 1fr;
+    }
+    
+    .sentiment-score {
+        flex-direction: column;
+        gap: 20px;
+    }
+}

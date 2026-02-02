@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 股票趨勢分析系統</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI 股票趨勢分析系統</h1>
+            <p>智能分析股市趨勢，提供投資建議</p>
+        </header>
+        
+        <div class="search-section">
+            <div class="input-group">
+                <input type="text" id="stockSymbol" placeholder="輸入股票代號 (例如: AAPL, GOOGL, TSLA)" maxlength="10">
+                <button id="analyzeBtn">AI 分析</button>
+            </div>
+            <div class="analysis-options">
+                <label>
+                    <input type="radio" name="analysisType" value="short" checked> 短期趨勢
+                </label>
+                <label>
+                    <input type="radio" name="analysisType" value="medium"> 中期趨勢
+                </label>
+                <label>
+                    <input type="radio" name="analysisType" value="long"> 長期趨勢
+                </label>
+            </div>
+        </div>
+        
+        <div class="dashboard">
+            <div class="stock-info">
+                <h2>股票資訊 <span id="currentSymbol">-</span></h2>
+                <div class="price-data">
+                    <div class="price-item">
+                        <span class="label">當前價格</span>
+                        <span class="value" id="currentPrice">-</span>
+                    </div>
+                    <div class="price-item">
+                        <span class="label">漲跌額</span>
+                        <span class="value" id="priceChange">-</span>
+                    </div>
+                    <div class="price-item">
+                        <span class="label">漲跌幅</span>
+                        <span class="value" id="priceChangePercent">-</span>
+                    </div>
+                    <div class="price-item">
+                        <span class="label">交易量</span>
+                        <span class="value" id="volume">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ai-analysis">
+                <h2>🧠 AI 分析結果</h2>
+                <div class="sentiment-score">
+                    <div class="score-circle">
+                        <span id="sentimentValue">0</span>
+                        <small>情緒分數</small>
+                    </div>
+                    <div class="recommendation">
+                        <span id="recommendation">等待分析...</span>
+                    </div>
+                </div>
+                <div class="analysis-details">
+                    <h3>分析依據</h3>
+                    <ul id="analysisFactors">
+                        <li>技術指標分析中...</li>
+                        <li>市場情緒評估中...</li>
+                        <li>歷史數據比對中...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h2>📈 股價走勢圖</h2>
+            <div class="chart-placeholder">
+                <p>圖表將在此顯示...</p>
+                <div class="loading-chart" id="chartLoader">生成中...</div>
+            </div>
+        </div>
+        
+        <div class="news-feed">
+            <h2>📰 相關新聞</h2>
+            <div id="newsContainer">
+                <p class="placeholder">搜索股票後顯示相關新聞...</p>
+            </div>
+        </div>
+        
+        <div class="risk-warning">
+            <h3>⚠️ 風險提醒</h3>
+            <p>本系統僅供參考，不構成投資建議。股市有風險，投資需謹慎。</p>
+        </div>
+    </div>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
