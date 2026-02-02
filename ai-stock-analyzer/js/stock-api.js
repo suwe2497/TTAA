@@ -4,7 +4,6 @@ class StockDataProvider {
             this.fetchFromAlphaVantage.bind(this),
             this.fetchFromFinnhub.bind(this),
             this.fetchFromPolygon.bind(this),
-            this.fetchFromIEX.bind(this),
             this.generateFallbackData.bind(this) // 最後回退到模擬數據
         ];
     }
@@ -32,9 +31,9 @@ class StockDataProvider {
     
     // Alpha Vantage 免費 API (需要免費密鑰)
     async fetchFromAlphaVantage(symbol) {
-        // 注意：Alpha Vantage 需要註冊獲取免費 API 密鑰
+        // 注意：Alpha Vantage 需要註冊獲取免費 API 密鍵
         // 每天 500 次請求限制
-        const apiKey = 'demo'; // 使用 demo 密鑰進行測試
+        const apiKey = 'F55O74BJQLRQISLY'; // 使用提供的真實密鑰
         const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
         
         const response = await fetch(url);
@@ -62,7 +61,7 @@ class StockDataProvider {
     async fetchFromFinnhub(symbol) {
         // 注意：Finnhub 需要免費 API 密鑰
         // 每秒 60 次請求限制
-        const apiKey = 'cq0gvnv48v6rhdtvnrig'; // demo 密鑰
+        const apiKey = 'd60476hr01qihi8odml0d60476hr01qihi8odmlg'; // 使用提供的真實密鑰
         const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
         
         const response = await fetch(url);
@@ -89,22 +88,32 @@ class StockDataProvider {
     async fetchFromPolygon(symbol) {
         // 注意：Polygon 需要註冊獲取免費 API 密鑰
         // 每天 500 次請求限制
-        const apiKey = 'YOUR_POLYGON_API_KEY'; // 需要替換為真實密鑰
+        const apiKey = 'cLK1qpVBEuF48ZYrEIdciCScgbkL0pdh'; // 使用提供的真實密鑰
         const url = `https://api.polygon.io/v1/last_quote/stocks/${symbol}?apiKey=${apiKey}`;
         
-        // 由於沒有真實密鑰，我們跳過這個 API
-        throw new Error('Polygon API key not provided');
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.results == null || data.status === 'NOT_AUTHORIZED') {
+            throw new Error('Invalid API key or rate limit reached');
+        }
+        
+        const result = data.results;
+        return {
+            symbol: result.T,
+            price: result.P, // 當前價格
+            change: result.x ? (result.P - result.x) : 0, // 漲跌額
+            changePercent: result.pX ? ((result.P - result.x) / result.x * 100).toFixed(2) : 0, // 漲跌幅
+            volume: result.v ? result.v.toLocaleString() : 'N/A'
+        };
     }
     
     // IEX Cloud 免費 API (需要免費密鑰)
     async fetchFromIEX(symbol) {
         // 注意：IEX Cloud 需要註冊獲取免費 API 密鑰
         // 每月 50,000 次請求限制
-        const publishableToken = 'pk_8e8...'; // 需要替換為真實密鑰
-        const url = `https://cloud.iexapis.com/stable/stock/${symbol}/quote?token=${publishableToken}`;
-        
-        // 由於沒有真實密鑰，我們跳過這個 API
-        throw new Error('IEX Cloud token not provided');
+        // 由於您提到 IEX Cloud 似乎不再提供服務，我們跳過這個 API
+        throw new Error('IEX Cloud service discontinued');
     }
     
     // 通用免費 API - 1
