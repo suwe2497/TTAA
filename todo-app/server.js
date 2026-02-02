@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = 18789; // 使用指定的端口
+const PORT = 3000; // 使用新端口避免衝突
 
 // 設置靜態文件目錄
 app.use(express.static(path.join(__dirname)));
@@ -22,5 +22,5 @@ app.use((req, res, next) => {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`TODO LIST 應用正在運行在端口 ${PORT}`);
-    console.log(`訪問地址: https://glorious-computing-machine-6q74jgwgwp5h576w-18789.app.github.dev/`);
+    console.log(`訪問地址: https://glorious-computing-machine-6q74jgwgwp5h576w-18789.app.github.dev:${PORT}/`);
 });
