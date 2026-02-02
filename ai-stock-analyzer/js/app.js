@@ -1,5 +1,6 @@
 class AIStockAnalyzer {
     constructor() {
+        this.api = new YahooFinanceAPI(); // 初始化 API 實例
         this.initializeElements();
         this.bindEvents();
     }
@@ -48,11 +49,8 @@ class AIStockAnalyzer {
         // 顯示加載狀態
         this.showLoadingState();
         
-        // 模擬 API 請求延遲
-        await this.delay(1500);
-        
-        // 生成模擬數據
-        this.generateMockData(symbol);
+        // 獲取真實數據（帶有備用機制）
+        await this.generateRealData(symbol);
         
         // 隱藏加載狀態
         this.hideLoadingState();
@@ -73,45 +71,71 @@ class AIStockAnalyzer {
         this.chartLoader.style.display = 'none';
     }
     
-    generateMockData(symbol) {
-        // 生成更真實的股價數據
+    async generateRealData(symbol) {
+        // 顯示加載狀態
+        this.chartLoader.style.display = 'block';
+        
+        try {
+            // 使用 API 獲取真實數據
+            const stockData = await this.api.getDetailedStockData(symbol);
+            
+            this.symbol = stockData.symbol;
+            this.price = stockData.price.toFixed(2);
+            this.change = stockData.change;
+            this.changePercent = stockData.changePercent;
+            this.vol = stockData.volume;
+            
+            // 生成 AI 分析結果
+            this.generateAIAnalysis(symbol);
+            
+            // 生成相關新聞
+            this.generateNews(symbol);
+        } catch (error) {
+            console.error('獲取股票數據時出錯:', error);
+            // 回退到模擬數據
+            this.generateFallbackData(symbol);
+        } finally {
+            this.chartLoader.style.display = 'none';
+        }
+    }
+    
+    generateFallbackData(symbol) {
+        // 回退到原始模擬數據邏輯
         let basePrice;
         
-        // 根據股票代號設置更合理的基準價格
         switch(symbol.toUpperCase()) {
             case 'AAPL':
-                basePrice = 175 + (Math.random() * 10 - 5); // $170-$180
+                basePrice = 175 + (Math.random() * 10 - 5);
                 break;
             case 'GOOGL':
-                basePrice = 140 + (Math.random() * 15 - 7.5); // $132-$147
+                basePrice = 140 + (Math.random() * 15 - 7.5);
                 break;
             case 'MSFT':
-                basePrice = 370 + (Math.random() * 20 - 10); // $360-$380
+                basePrice = 370 + (Math.random() * 20 - 10);
                 break;
             case 'AMZN':
-                basePrice = 175 + (Math.random() * 15 - 7.5); // $167-$182
+                basePrice = 175 + (Math.random() * 15 - 7.5);
                 break;
             case 'TSLA':
-                basePrice = 410 + (Math.random() * 20 - 10); // $400-$420 (更接近您提到的$418.64)
+                basePrice = 410 + (Math.random() * 20 - 10);
                 break;
             case 'NVDA':
-                basePrice = 850 + (Math.random() * 50 - 25); // $825-$875
+                basePrice = 850 + (Math.random() * 50 - 25);
                 break;
             case 'META':
-                basePrice = 480 + (Math.random() * 20 - 10); // $470-$490
+                basePrice = 480 + (Math.random() * 20 - 10);
                 break;
             case 'NFLX':
-                basePrice = 550 + (Math.random() * 25 - 12.5); // $537-$562
+                basePrice = 550 + (Math.random() * 25 - 12.5);
                 break;
             default:
-                basePrice = 50 + (Math.random() * 300); // $50-$350 通用範圍
+                basePrice = 50 + (Math.random() * 300);
         }
         
-        // 生成更合理的漲跌幅 (-5% 到 +5%)
         const changePercent = (Math.random() - 0.5) * 0.1;
         const changeAmount = basePrice * changePercent;
         const currentPrice = basePrice + changeAmount;
-        const volume = Math.floor(Math.random() * 10000000) + 1000000; // 1M-11M
+        const volume = Math.floor(Math.random() * 10000000) + 1000000;
         
         this.symbol = symbol;
         this.price = currentPrice.toFixed(2);
