@@ -22,5 +22,5 @@ app.use((req, res, next) => {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`TODO LIST 應用正在運行在端口 ${PORT}`);
-    console.log(`訪問地址: https://glorious-computing-machine-6q74jgwgwp5h576w-18789.app.github.dev:${PORT}/`);
+    console.log(`訪問地址: https://glorious-computing-machine-6q74jgwgwp5h576w-${PORT}.app.github.dev/`);
 });
