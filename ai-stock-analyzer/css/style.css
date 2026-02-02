@@ -244,16 +244,101 @@ header p {
 
 .chart-placeholder {
     background: white;
-    padding: 40px;
+    padding: 20px;
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-height: 350px;
+    position: relative;
 }
 
 .loading-chart {
     margin-top: 15px;
     color: #667eea;
     font-weight: 500;
+}
+
+.chart-wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.chart-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.chart-period-btn {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.chart-period-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.chart-area {
+    display: flex;
+    position: relative;
+}
+
+.y-axis-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 5px;
+    text-align: right;
+    font-size: 0.8rem;
+    color: #666;
+    min-width: 40px;
+}
+
+.chart-grid {
+    flex: 1;
+    position: relative;
+}
+
+.chart-svg {
+    width: 100%;
+    height: 300px;
+    display: block;
+}
+
+.price-line {
+    transition: all 0.3s ease;
+}
+
+.chart-x-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.x-label {
+    flex: 1;
+    text-align: center;
+}
+
+.y-label {
+    margin-bottom: 70px;
 }
 
 .news-feed {

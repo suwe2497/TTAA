@@ -435,27 +435,109 @@ class AIStockAnalyzer {
     }
     
     generateNews(symbol) {
-        const newsItems = [
-            `${symbol} 宣布新產品發布，市場反應熱烈`,
-            '經濟數據好於預期，提振市場信心',
-            `${symbol} 獲得大額訂單，營收有望增長`,
-            '監管政策變化影響相關板塊走勢',
-            '全球供應鏈恢復正常，成本壓力減輕',
-            `${symbol} 宣布回購股份計劃`,
-            '央行利率決策影響市場流動性',
-            `${symbol} 在新興市場擴張業務`
-        ];
+        // 使用 API 獲取真實新聞（如果有可用的 API 密鑰）
+        this.fetchNewsFromAPI(symbol)
+            .then(newsData => {
+                this.news = newsData;
+                this.updateNewsDisplay();
+            })
+            .catch(error => {
+                console.warn('獲取真實新聞失敗，使用模擬新聞:', error);
+                // 使用模擬新聞作為備用
+                const newsItems = [
+                    `${symbol} 宣布新產品發布，市場反應熱烈`,
+                    '經濟數據好於預期，提振市場信心',
+                    `${symbol} 獲得大額訂單，營收有望增長`,
+                    '監管政策變化影響相關板塊走勢',
+                    '全球供應鏈恢復正常，成本壓力減輕',
+                    `${symbol} 宣布回購股份計劃`,
+                    '央行利率決策影響市場流動性',
+                    `${symbol} 在新興市場擴張業務`
+                ];
+                
+                // 隨機選擇 3-5 條新聞
+                const selectedNews = [];
+                const count = Math.floor(Math.random() * 3) + 3;
+                
+                for (let i = 0; i < count; i++) {
+                    const randomIndex = Math.floor(Math.random() * newsItems.length);
+                    selectedNews.push(newsItems[randomIndex]);
+                }
+                
+                this.news = selectedNews;
+                this.updateNewsDisplay();
+            });
+    }
+    
+    async fetchNewsFromAPI(symbol) {
+        // 嘗試使用 Alpha Vantage 新聞 API
+        try {
+            const apiKey = 'F55O74BJQLRQISLY';
+            const url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${symbol}&limit=5&apikey=${apiKey}`;
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.feed) {
+                return data.feed.map(article => ({
+                    title: article.title,
+                    summary: article.summary,
+                    source: article.source,
+                    time: new Date(article.time_published).toLocaleString('zh-TW')
+                }));
+            } else {
+                throw new Error('No news data returned');
+            }
+        } catch (error) {
+            console.warn('Alpha Vantage news API failed:', error);
+            
+            // 嘗試使用 Finnhub 新聞 API 作為備用
+            try {
+                const apiKey = 'd60476hr01qihi8odml0d60476hr01qihi8odmlg';
+                const url = `https://finnhub.io/api/v1/company-news?symbol=${symbol}&from=2025-12-01&to=2026-02-02&token=${apiKey}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data && Array.isArray(data)) {
+                    return data.slice(0, 5).map(article => ({
+                        title: article.headline,
+                        summary: article.summary || 'No summary available',
+                        source: article.source,
+                        time: new Date(article.datetime * 1000).toLocaleString('zh-TW')
+                    }));
+                } else {
+                    throw new Error('No news data from Finnhub');
+                }
+            } catch (error2) {
+                console.warn('Finnhub news API also failed:', error2);
+                throw error2;
+            }
+        }
+    }
+    
+    updateNewsDisplay() {
+        // 更新新聞顯示
+        const newsContainer = document.getElementById('newsContainer');
+        if (!newsContainer || !this.news) return;
         
-        // 隨機選擇 3-5 條新聞
-        const selectedNews = [];
-        const count = Math.floor(Math.random() * 3) + 3;
+        newsContainer.innerHTML = '';
         
-        for (let i = 0; i < count; i++) {
-            const randomIndex = Math.floor(Math.random() * newsItems.length);
-            selectedNews.push(newsItems[randomIndex]);
+        if (this.news.length === 0) {
+            newsContainer.innerHTML = '<p class="placeholder">暫無相關新聞</p>';
+            return;
         }
         
-        this.news = selectedNews;
+        this.news.forEach(item => {
+            const newsItem = document.createElement('div');
+            newsItem.className = 'news-item';
+            newsItem.innerHTML = `
+                <h4>${item.title || item}</h4>
+                <p>${item.summary || '相關市場動態'}</p>
+                <small>來源: ${item.source || '市場資訊'} | 時間: ${item.time || this.getCurrentTime()}</small>
+            `;
+            newsContainer.appendChild(newsItem);
+        });
     }
     
     updateUI() {
@@ -505,17 +587,210 @@ class AIStockAnalyzer {
             this.analysisFactors.appendChild(li);
         });
         
-        // 更新新聞
-        this.newsContainer.innerHTML = '';
-        this.news.forEach(item => {
-            const newsItem = document.createElement('div');
-            newsItem.className = 'news-item';
-            newsItem.innerHTML = `
-                <h4>${item}</h4>
-                <p>發布時間：${this.getCurrentTime()}</p>
+        // 更新新聞顯示
+        this.updateNewsDisplay();
+        
+        // 生成圖表
+        this.generateChart();
+    }
+    
+    async generateChart() {
+        const symbol = this.symbol;
+        const chartContainer = document.querySelector('.chart-placeholder');
+        if (!chartContainer) return;
+        
+        try {
+            // 清除之前的內容
+            chartContainer.innerHTML = `
+                <div class="chart-header">
+                    <h3>${symbol} 近期走勢</h3>
+                    <div class="chart-controls">
+                        <button class="chart-period-btn active" data-period="week">週</button>
+                        <button class="chart-period-btn" data-period="month">月</button>
+                        <button class="chart-period-btn" data-period="quarter">季</button>
+                    </div>
+                </div>
+                <div class="chart-area">
+                    <div class="y-axis-labels">
+                        <div class="y-label">高</div>
+                        <div class="y-label">中</div>
+                        <div class="y-label">低</div>
+                    </div>
+                    <div class="chart-grid">
+                        <svg class="chart-svg" viewBox="0 0 600 300" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="chartGradient" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="${parseFloat(this.change) >= 0 ? '#28a745' : '#dc3545'}" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="${parseFloat(this.change) >= 0 ? '#28a745' : '#dc3545'}" stop-opacity="0.05"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+                <div class="chart-x-axis">
+                    <div class="x-label">開始</div>
+                    <div class="x-label">中間</div>
+                    <div class="x-label">結束</div>
+                </div>
             `;
-            this.newsContainer.appendChild(newsItem);
+            
+            // 添加圖表控制事件
+            this.addChartControls();
+            
+            // 獲取歷史數據並繪製圖表
+            await this.fetchAndDrawChart(symbol);
+        } catch (error) {
+            console.error('生成圖表時出錯:', error);
+            chartContainer.innerHTML = '<p>圖表生成失敗，請稍後再試</p>';
+        }
+    }
+    
+    async fetchAndDrawChart(symbol) {
+        try {
+            // 嘗試從 Alpha Vantage 獲取歷史數據
+            const apiKey = 'F55O74BJQLRQISLY';
+            const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${apiKey}`;
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data['Error Message']) {
+                throw new Error('Failed to fetch historical data');
+            }
+            
+            const timeSeries = data['Time Series (Daily)'];
+            if (!timeSeries) {
+                throw new Error('No historical data returned');
+            }
+            
+            // 轉換數據格式
+            const sortedDates = Object.keys(timeSeries).sort((a, b) => new Date(b) - new Date(a)).slice(0, 30);
+            const prices = sortedDates.map(date => parseFloat(timeSeries[date]['4. close'])).reverse();
+            
+            // 繪製圖表
+            this.drawChart(prices, symbol);
+        } catch (error) {
+            console.warn('獲取 Alpha Vantage 歷史數據失敗:', error);
+            
+            // 嘗試使用 Finnhub 作為備用
+            try {
+                const apiKey = 'd60476hr01qihi8odml0d60476hr01qihi8odmlg';
+                const to = Math.floor(Date.now() / 1000);
+                const from = to - (30 * 24 * 60 * 60); // 30天前
+                
+                const url = `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${from}&to=${to}&token=${apiKey}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.s !== 'ok') {
+                    throw new Error('Finnhub request failed');
+                }
+                
+                // 繪製圖表
+                this.drawChart(data.c, symbol);
+            } catch (error2) {
+                console.warn('獲取 Finnhub 歷史數據也失敗:', error2);
+                
+                // 如果都失敗，使用當前價格生成模擬走勢
+                const currentPrice = parseFloat(this.price);
+                const simulatedPrices = this.generateSimulatedPrices(currentPrice, 30);
+                this.drawChart(simulatedPrices, symbol);
+            }
+        }
+    }
+    
+    drawChart(prices, symbol) {
+        if (!prices || prices.length === 0) {
+            const currentPrice = parseFloat(this.price);
+            prices = this.generateSimulatedPrices(currentPrice, 30);
+        }
+        
+        const svg = document.querySelector('.chart-svg');
+        if (!svg) return;
+        
+        // 清除之前的路徑
+        const existingPath = svg.querySelector('.price-line');
+        if (existingPath) existingPath.remove();
+        
+        const areaPath = svg.querySelector('.area-path');
+        if (areaPath) areaPath.remove();
+        
+        // 設置圖表尺寸
+        const padding = 40;
+        const width = 600 - 2 * padding;
+        const height = 300 - 2 * padding;
+        const xStep = width / (prices.length - 1);
+        
+        // 找到價格範圍
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+        const priceRange = maxPrice - minPrice || 1; // 防止除零
+        
+        // 創建路徑數據
+        let pathData = '';
+        prices.forEach((price, i) => {
+            const x = padding + i * xStep;
+            // Y 坐標需要翻轉（SVG 的 Y 軸向下）
+            const y = padding + height - ((price - minPrice) / priceRange) * height;
+            
+            if (i === 0) {
+                pathData += `M ${x} ${y} `;
+            } else {
+                pathData += `L ${x} ${y} `;
+            }
         });
+        
+        // 創建填充區域路徑
+        let areaPathData = pathData + ` L ${padding + width} ${padding + height} L ${padding} ${padding + height} Z`;
+        
+        // 創建填充區域路徑元素
+        const areaPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        areaPathEl.setAttribute('d', areaPathData);
+        areaPathEl.setAttribute('class', 'area-path');
+        areaPathEl.setAttribute('fill', 'url(#chartGradient)');
+        areaPathEl.setAttribute('opacity', '0.6');
+        
+        // 創建價格線路徑元素
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('class', 'price-line');
+        path.setAttribute('stroke', parseFloat(this.change) >= 0 ? '#28a745' : '#dc3545');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('fill', 'none');
+        
+        // 添加到 SVG
+        svg.appendChild(areaPathEl);
+        svg.appendChild(path);
+    }
+    
+    generateSimulatedPrices(basePrice, days) {
+        const prices = [basePrice];
+        let currentPrice = basePrice;
+        
+        for (let i = 1; i < days; i++) {
+            // 生成隨機波動 (-2% 到 +2%)
+            const changePercent = (Math.random() - 0.5) * 0.04; // -2% to +2%
+            currentPrice = currentPrice * (1 + changePercent);
+            prices.push(parseFloat(currentPrice.toFixed(2)));
+        }
+        
+        return prices;
+    }
+    
+    addChartControls() {
+        const buttons = document.querySelectorAll('.chart-period-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // 重新生成圖表
+                const symbol = this.symbol;
+                this.fetchAndDrawChart(symbol);
+            });
+        });
+    }
     }
     
     getCurrentTime() {
