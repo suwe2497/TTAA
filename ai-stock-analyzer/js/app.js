@@ -92,7 +92,7 @@ class AIStockAnalyzer {
                 basePrice = 175 + (Math.random() * 15 - 7.5); // $167-$182
                 break;
             case 'TSLA':
-                basePrice = 250 + (Math.random() * 25 - 12.5); // $237-$262
+                basePrice = 410 + (Math.random() * 20 - 10); // $400-$420 (更接近您提到的$418.64)
                 break;
             case 'NVDA':
                 basePrice = 850 + (Math.random() * 50 - 25); // $825-$875
